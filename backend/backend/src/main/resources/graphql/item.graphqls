@@ -1,0 +1,15 @@
+type Item {
+    id: ID!
+    upc: String!
+    name: String!
+    department: String!
+}
+
+extend type Query {
+    getAllItems: [Item]!
+}
+
+extend type Mutation {
+    addItem(upc: String!, name: String!, department: String!): Item!
+    deleteItem(id: ID!): Boolean!
+}

@@ -1,0 +1,19 @@
+scalar Date
+
+type ShrinkItem {
+    id: ID!
+    item: Item!
+    expirationDate: Date!
+    quantity: Int!
+    dateAdded: Date!
+    userWhoAdded: String!
+}
+
+extend type Query {
+    getAllShrinkItems: [ShrinkItem]!
+}
+
+extend type Mutation {
+    deleteShrinkItem(id: ID!, quantity: Int!): Boolean
+    addShrinkItem(upc: String!, expirationDate: String!, quantity: Int!): ShrinkItem!
+}

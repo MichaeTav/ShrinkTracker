@@ -1,0 +1,21 @@
+.page-title {
+  display: block !important;
+  text-align: center;
+  font-size: 2rem;
+  margin-top: 10px;
+}
+
+.item-form {
+  display: block !important;
+  text-align: center;
+}
+
+.form-container {
+  width: 400px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
