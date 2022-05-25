@@ -5,7 +5,11 @@ export const useForm = (callback, initialState = {}) => {
   const [values, setValues] = useState(initialState);
 
   const onChange = (event, data) => {
-    setValues({ ...values, [data.name]: data.value });
+    if (data) {
+      setValues({ ...values, [data.name]: data.value });
+    } else {
+      setValues({ ...values, [event.target.name]: event.target.value });
+    }
   };
 
   const onSubmit = (event) => {

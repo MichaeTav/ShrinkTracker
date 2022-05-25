@@ -1,12 +1,21 @@
 import React, { useState } from "react";
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
-import { Button, Confirm, Icon } from "semantic-ui-react";
+import {
+  IconButton,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  DialogContentText,
+  Button,
+  Tooltip,
+} from "@mui/material";
+import DeleteOutlined from "@mui/icons-material/Delete";
 
 import { FETCH_ALL_ITEMS_QUERY } from "../../util/graphql.js";
-import MyPopup from "../../util/MyPopup";
 
-const DeleteItemButton = ({ id, callback }) => {
+export default function DeleteItemButton({ id, callback }) {
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   const [deleteItemMutation] = useMutation(DELETE_ITEM_MUTATION, {
@@ -30,31 +39,39 @@ const DeleteItemButton = ({ id, callback }) => {
     },
   });
 
+  const handleClickOpen = () => {
+    setConfirmOpen(true);
+  };
+
+  const handleClose = () => {
+    setConfirmOpen(false);
+  };
+
   return (
-    <>
-      <MyPopup content="Delete Item">
-        <Button
-          as="div"
-          color="red"
-          floated="right"
-          onClick={() => setConfirmOpen(true)}
-        >
-          <Icon name="trash" style={{ margin: 0 }} />
-        </Button>
-      </MyPopup>
-      <Confirm
-        open={confirmOpen}
-        onCancel={() => setConfirmOpen(false)}
-        onConfirm={deleteItemMutation}
-      />
-    </>
+    <div>
+      <Tooltip title="Delete Item" arrow>
+        <IconButton size="large" color="error" onClick={handleClickOpen}>
+          <DeleteOutlined />
+        </IconButton>
+      </Tooltip>
+      <Dialog open={confirmOpen} onClose={handleClose}>
+        <DialogTitle>Do you want to delete this item?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Will not longer be able to access this item
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={deleteItemMutation}>Delete</Button>
+        </DialogActions>
+      </Dialog>
+    </div>
   );
-};
+}
 
 const DELETE_ITEM_MUTATION = gql`
   mutation ($id: ID!) {
     deleteItem(id: $id)
   }
 `;
-
-export default DeleteItemButton;

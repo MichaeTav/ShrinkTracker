@@ -1,13 +1,28 @@
 import React, { useState } from "react";
 import gql from "graphql-tag";
-import { Button, Modal, Icon, Form } from "semantic-ui-react";
 import { useMutation } from "@apollo/react-hooks";
+import {
+  IconButton,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Button,
+  Tooltip,
+  Box,
+  TextField,
+  Stack,
+  Select,
+  FormControl,
+  InputLabel,
+  MenuItem,
+} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 
 import { FETCH_ALL_ITEMS_QUERY } from "../../util/graphql.js";
-import MyPopup from "../../util/MyPopup";
 import { useForm } from "../../util/hooks";
 
-function AddItemButton() {
+export default function AddItemButton() {
   const initialValues = {
     upc: "",
     name: "",
@@ -24,10 +39,7 @@ function AddItemButton() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [errors, setErrors] = useState({});
 
-  const { onChange, onSubmit, onClose, values } = useForm(
-    addItemCallback,
-    initialValues
-  );
+  const { onChange, onClose, values } = useForm(addItemCallback, initialValues);
 
   const [addItem, { loading }] = useMutation(ADD_ITEM_MUTATION, {
     variables: values,
@@ -57,69 +69,75 @@ function AddItemButton() {
     addItem();
   }
 
-  function closeForm() {
+  function onSelectionChange(event) {
+    onChange(event);
+  }
+
+  function handleClickOpen() {
+    setConfirmOpen(true);
+  }
+
+  function handleClose() {
     onClose();
     setConfirmOpen(false);
   }
   return (
     <>
-      <MyPopup content="Add New Item">
-        <Button
-          as="div"
-          color="green"
-          floated="right"
-          onClick={() => setConfirmOpen(true)}
-        >
-          <Icon name="plus" style={{ margin: 0 }} />
-        </Button>
-      </MyPopup>
-      <Modal open={confirmOpen} size="tiny" onClose={() => closeForm()}>
-        <div className="form-container">
-          <Form
-            onSubmit={onSubmit}
-            noValidate
-            className={loading ? "loading" : ""}
-          >
-            <h1>Add Item</h1>
-            <Form.Input
-              label="UPC"
-              placeholder="UPC.."
-              name="upc"
-              type="text"
-              value={values.upc}
-              onChange={onChange}
-            />
-            <Form.Input
-              label="Name"
-              placeholder="Name.."
-              name="name"
-              type="text"
-              value={values.name}
-              onChange={onChange}
-            />
-            <Form.Select
-              label="Department"
-              placeholder="Department"
-              name="department"
-              options={departmentSelections}
-              //value={values.department}
-              onChange={onChange}
-            />
-            <Button type="submit" primary>
-              Add Item
-            </Button>
-          </Form>
-          {Object.keys(errors).length > 0 && (
-            <div className="ui error message">
-              <ul className="list">
-                {Object.values(errors).map((value) => (
-                  <li key={value}>{value}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      </Modal>
+      <Tooltip title="Add Item" arrow>
+        <IconButton size="large" color="success" onClick={handleClickOpen}>
+          <AddIcon />
+        </IconButton>
+      </Tooltip>
+      <Dialog open={confirmOpen} onClose={handleClose}>
+        <DialogTitle>Add New Item</DialogTitle>
+        <DialogContent>
+          <Box>
+            <Stack
+              direction="column"
+              justifyContent="space-evenly"
+              alignItems="center"
+              spacing={2}
+            >
+              <TextField
+                name="upc"
+                label="UPC"
+                type="text"
+                variant="standard"
+                value={values.upc}
+                onChange={onChange}
+              />
+              <TextField
+                name="name"
+                label="Name"
+                type="text"
+                variant="standard"
+                value={values.name}
+                onChange={onChange}
+              />
+              <FormControl variant="standard" fullWidth>
+                <InputLabel id="department-select-label">Department</InputLabel>
+                <Select
+                  labelId="department-select-label"
+                  name="department"
+                  value={values.department}
+                  onChange={onSelectionChange}
+                  label="Department"
+                >
+                  {departmentSelections.map((department) => (
+                    <MenuItem key={department.key} value={department.value}>
+                      {department.text}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            </Stack>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={addItem}>Add</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
@@ -134,5 +152,3 @@ const ADD_ITEM_MUTATION = gql`
     }
   }
 `;
-
-export default AddItemButton;
