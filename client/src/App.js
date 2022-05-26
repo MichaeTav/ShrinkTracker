@@ -20,7 +20,22 @@ function App() {
         <Container>
           <MenuBar />
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route
+              path="/"
+              element={
+                <AuthRoute>
+                  <Login />
+                </AuthRoute>
+              }
+            />
+            <Route
+              path="/home"
+              element={
+                <AuthenticatedRoute>
+                  <Home />
+                </AuthenticatedRoute>
+              }
+            />
             <Route
               path="/users"
               element={

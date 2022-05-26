@@ -41,12 +41,14 @@ export default function ItemTable() {
                 </TableCell>
               </TableRow>
             ))}
-          <TableCell></TableCell>
-          <TableCell></TableCell>
-          <TableCell></TableCell>
-          <TableCell align="right">
-            <AddItemButton />
-          </TableCell>
+          <TableRow>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell align="right">
+              <AddItemButton />
+            </TableCell>
+          </TableRow>
         </TableBody>
       </Table>
     </TableContainer>

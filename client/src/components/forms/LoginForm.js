@@ -11,7 +11,7 @@ function LoginForm() {
   const context = useContext(AuthContext);
 
   const navigate = useNavigate();
-  const [errors, setErrors] = useState({});
+  const [error, setError] = useState("");
 
   const { onChange, onSubmit, values } = useForm(loginUserCallback, {
     username: "",
@@ -21,10 +21,12 @@ function LoginForm() {
   const [loginUser, { loading }] = useMutation(LOGIN_USER, {
     update(_, { data: { login: userData } }) {
       context.login(userData);
-      navigate("/");
+      navigate("/home");
+      navigate("/home");
     },
     onError(err) {
-      setErrors(err.graphQLErrors[0].extensions.exception);
+      setError(err.graphQLErrors[0].extensions.exception);
+      setError(err.graphQLErrors[0].extensions.exception);
     },
     variables: values,
   });
@@ -32,6 +34,7 @@ function LoginForm() {
   function loginUserCallback() {
     loginUser();
   }
+
   return (
     <Box
       component="form"
@@ -55,6 +58,8 @@ function LoginForm() {
           variant="standard"
           value={values.username}
           onChange={onChange}
+          error={error === "" ? false : true}
+          helperText={error === "" ? "" : error}
         />
         <TextField
           name="password"
@@ -63,6 +68,8 @@ function LoginForm() {
           variant="standard"
           value={values.password}
           onChange={onChange}
+          error={error === "" ? false : true}
+          helperText={error === "" ? "" : error}
         />
         <Box sx={{ marginTop: "20px" }}>
           <Button variant="contained" type="submit" onClick={onSubmit}>

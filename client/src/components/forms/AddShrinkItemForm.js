@@ -26,6 +26,7 @@ export default function AddShrinkItemForm() {
   );
 
   const [addShrinkItem] = useMutation(ADD_ITEM_MUTATION, {
+    awaitRefetchQueries: true,
     variables: values,
     update(proxy, result) {
       const data = proxy.readQuery({
@@ -43,12 +44,20 @@ export default function AddShrinkItemForm() {
       });
       //resets form to initial values
       onClose();
+      setErrors([]);
     },
     onError(err) {
-      console.log(err.graphQLErrors[0].extensions.exception);
       setErrors(err.graphQLErrors[0].extensions.exception);
     },
   });
+
+  function checkInputs(event) {
+    if (values.expirationDate === null) values.expirationDate = "";
+    if (values.quantity === "") values.quantity = 0;
+    onSubmit(event);
+    if (values.expirationDate === "") values.expirationDate = null;
+    if (values.quantity === 0) values.quantity = "";
+  }
 
   function itemSearchCallback(item) {
     values.item = item;
@@ -56,7 +65,6 @@ export default function AddShrinkItemForm() {
   }
 
   function addShrinkItemCallback() {
-    setErrors([]);
     addShrinkItem();
   }
 
@@ -80,6 +88,8 @@ export default function AddShrinkItemForm() {
         <ItemSearchBar
           itemSearchCallback={itemSearchCallback}
           item={values.item}
+          error={errors.item ? true : false}
+          helperText={!errors.item ? "" : errors.item}
         />
         <LocalizationProvider dateAdapter={AdapterMoment}>
           {isMobile ? (
@@ -89,7 +99,14 @@ export default function AddShrinkItemForm() {
               value={values.expirationDate}
               onChange={onChange}
               renderInput={(params) => (
-                <TextField {...params} variant="standard" />
+                <TextField
+                  {...params}
+                  error={errors.expirationDate ? true : false}
+                  helperText={
+                    !errors.expirationDate ? "" : errors.expirationDate
+                  }
+                  variant="standard"
+                />
               )}
             />
           ) : (
@@ -99,7 +116,14 @@ export default function AddShrinkItemForm() {
               value={values.expirationDate}
               onChange={onChange}
               renderInput={(params) => (
-                <TextField {...params} variant="standard" />
+                <TextField
+                  {...params}
+                  error={errors.expirationDate ? true : false}
+                  helperText={
+                    !errors.expirationDate ? "" : errors.expirationDate
+                  }
+                  variant="standard"
+                />
               )}
             />
           )}
@@ -111,9 +135,11 @@ export default function AddShrinkItemForm() {
           variant="standard"
           value={values.quantity}
           onChange={onChange}
+          error={errors.quantity ? true : false}
+          helperText={!errors.quantity ? "" : errors.quantity}
         />
         <Box sx={{ marginTop: "20px" }}>
-          <Button variant="contained" onClick={onSubmit}>
+          <Button variant="contained" onClick={checkInputs}>
             Submit
           </Button>
         </Box>

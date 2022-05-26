@@ -60,20 +60,26 @@ public class UserResolver implements GraphQLQueryResolver, GraphQLMutationResolv
         /* Empty/taken username */
         if(userInput.getUsername() == ""){
             //throw new CreateUserException("Username cannot be empty");
-            errors.put("username","Username cannot be empty");
+            errors.put("username","Username cannot be empty!");
         } else if(userRepository.existsByUsername(userInput.getUsername())){
             //throw new CreateUserException("Username is taken");
-            errors.put("username","Username is taken");
+            errors.put("username","Username is taken!");
         }
         //empty/invalid email
         if(userInput.getEmail() == ""){
-            errors.put("email","Email cannot be empty");
+            errors.put("email","Email cannot be empty!");
         } else if(!validate(userInput.getEmail())){
-            errors.put("email","Email is not valid");
+            errors.put("email","Email is not valid!");
         }
         //confirm password does not match
-        if(!userInput.getPassword().equals(userInput.getConfirmPassword())){
-            errors.put("password","Passwords do not match");
+        if(userInput.getPassword() == ""){
+            errors.put("password", "Password cannot be empty!");
+        } else if(!userInput.getPassword().equals(userInput.getConfirmPassword())) {
+            errors.put("confirmPassword", "Passwords do not match!");
+        }
+        //department is not empty
+        if(userInput.getDepartment() == ""){
+            errors.put("department", "Department cannot be empty!");
         }
         if(errors.size() > 0){
             throw new CreateUserException("Invalid input", errors);

@@ -13,7 +13,6 @@ public class CreateUserException extends RuntimeException implements GraphQLErro
     private String message;
     public CreateUserException(String message, Map<String, Object> errors){
         super(message);
-        this.message = message;
         this.errors = errors;
     }
 
@@ -34,7 +33,6 @@ public class CreateUserException extends RuntimeException implements GraphQLErro
 
     @Override
     public Map<String, Object> getExtensions() {
-        //return GraphQLError.super.getExtensions();
         return Collections.singletonMap("exception", errors);
     }
 }

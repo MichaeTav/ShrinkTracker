@@ -5,7 +5,7 @@ import { AuthContext } from "../context/auth";
 
 export function AuthRoute({ children }) {
   const user = useContext(AuthContext);
-  return user.userData ? <Navigate to="/" /> : children;
+  return user.userData ? <Navigate to="/home" /> : children;
 }
 
 export function AuthenticatedRoute({ children }) {

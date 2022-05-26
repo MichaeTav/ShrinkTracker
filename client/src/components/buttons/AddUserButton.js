@@ -14,6 +14,7 @@ import {
   Stack,
   Select,
   FormControl,
+  FormHelperText,
   InputLabel,
   MenuItem,
 } from "@mui/material";
@@ -58,9 +59,9 @@ function AddUserButton() {
         data,
       });
       setConfirmOpen(false);
+      setErrors({});
     },
     onError(err) {
-      console.log(values);
       setErrors(err.graphQLErrors[0].extensions.exception);
     },
   });
@@ -78,6 +79,7 @@ function AddUserButton() {
   }
 
   function handleClose() {
+    setErrors({});
     onClose();
     setConfirmOpen(false);
   }
@@ -106,6 +108,8 @@ function AddUserButton() {
                 variant="standard"
                 value={values.username}
                 onChange={onChange}
+                error={errors.username}
+                helperText={!errors.username ? "" : errors.username}
               />
               <TextField
                 name="password"
@@ -114,6 +118,8 @@ function AddUserButton() {
                 variant="standard"
                 value={values.password}
                 onChange={onChange}
+                error={errors.password}
+                helperText={!errors.password ? "" : errors.password}
               />
               <TextField
                 name="confirmPassword"
@@ -122,8 +128,16 @@ function AddUserButton() {
                 variant="standard"
                 value={values.confirmPassword}
                 onChange={onChange}
+                error={errors.confirmPassword}
+                helperText={
+                  !errors.confirmPassword ? "" : errors.confirmPassword
+                }
               />
-              <FormControl variant="standard" fullWidth>
+              <FormControl
+                error={errors.department}
+                variant="standard"
+                fullWidth
+              >
                 <InputLabel id="department-select-label">Department</InputLabel>
                 <Select
                   labelId="department-select-label"
@@ -138,6 +152,9 @@ function AddUserButton() {
                     </MenuItem>
                   ))}
                 </Select>
+                {errors.department && (
+                  <FormHelperText>{errors.department}</FormHelperText>
+                )}
               </FormControl>
               <TextField
                 name="email"
@@ -146,6 +163,8 @@ function AddUserButton() {
                 variant="standard"
                 value={values.email}
                 onChange={onChange}
+                error={errors.email}
+                helperText={!errors.email ? "" : errors.email}
               />
             </Stack>
           </Box>

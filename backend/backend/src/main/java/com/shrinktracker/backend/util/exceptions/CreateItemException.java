@@ -8,12 +8,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public class ItemAlreadyExistsException extends RuntimeException implements GraphQLError {
+public class CreateItemException extends RuntimeException implements GraphQLError {
+    private Map<String, Object> errors;
     private String message;
 
-    public ItemAlreadyExistsException(String message){
+    public CreateItemException(String message, Map<String, Object> errors){
         super(message);
         this.message = message;
+        this.errors = errors;
     }
 
     @Override
@@ -33,7 +35,6 @@ public class ItemAlreadyExistsException extends RuntimeException implements Grap
 
     @Override
     public Map<String, Object> getExtensions() {
-        //return GraphQLError.super.getExtensions();
-        return Collections.singletonMap("exception", message);
+        return Collections.singletonMap("exception", errors);
     }
 }

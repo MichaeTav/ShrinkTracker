@@ -9,20 +9,23 @@ import java.util.List;
 import java.util.Map;
 
 public class AddShrinkItemException extends RuntimeException implements GraphQLError {
-    private Map<String, String> errors;
+    private Map<String, Object> errors;
+    private String message;
 
-    public AddShrinkItemException(String message, Map<String, String> errors){
+    public AddShrinkItemException(String message, Map<String, Object> errors){
         super(message);
+        this.message = message;
         this.errors = errors;
+    }
+
+    @Override
+    public String getMessage(){
+        return this.message;
     }
 
     @Override
     public List<SourceLocation> getLocations() {
         return null;
-    }
-    @Override
-    public String getMessage(){
-        return super.getMessage();
     }
 
     @Override

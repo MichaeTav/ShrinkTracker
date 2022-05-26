@@ -41,12 +41,14 @@ function UserTable() {
                 </TableCell>
               </TableRow>
             ))}
-          <TableCell></TableCell>
-          <TableCell></TableCell>
-          <TableCell></TableCell>
-          <TableCell align="right">
-            <AddUserButton />
-          </TableCell>
+          <TableRow>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell></TableCell>
+            <TableCell align="right">
+              <AddUserButton />
+            </TableCell>
+          </TableRow>
         </TableBody>
       </Table>
     </TableContainer>

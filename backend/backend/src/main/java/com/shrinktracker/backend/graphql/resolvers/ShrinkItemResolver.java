@@ -24,6 +24,7 @@ import java.time.LocalDate;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -56,20 +57,24 @@ public class ShrinkItemResolver implements GraphQLQueryResolver, GraphQLMutation
 
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ShrinkItem addShrinkItem(String upc, String expirationDate, int quantity) throws ParseException {
-        Map<String, String> errors = new HashMap<>();
-        if(itemRepository.findByupc(upc) == null){
-            errors.put("item","Item not found by UPC");
+        Map<String, Object> errors = new HashMap<>();
+
+        if(upc == ""){
+            errors.put("item","Item cannot be empty!");
+        } else if(itemRepository.findByupc(upc) == null){
+            errors.put("item","Item not found by UPC!");
         }
         if(expirationDate == ""){
-            errors.put("expirationDate","Expiration Date cannot be empty");
+            errors.put("expirationDate","Expiration Date cannot be empty!");
         }else if(new SimpleDateFormat("yyyy-MM-dd").parse(expirationDate).before(new Date())){
-            errors.put("expirationDate","Expiration Date cannot be before todays date");
+            errors.put("expirationDate","Expiration Date cannot be before todays date!");
         }
         if(quantity < 1){
-            errors.put("quantity","Quantity must be greater than 0");
+            errors.put("quantity","Quantity must be greater than 0!");
         }
+
         if(errors.size() > 0){
-            throw new AddShrinkItemException("Invalid input", errors);
+            throw new AddShrinkItemException("Invalid shrink item input", errors);
         }
 
 

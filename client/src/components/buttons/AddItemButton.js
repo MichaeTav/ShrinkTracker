@@ -14,6 +14,7 @@ import {
   Stack,
   Select,
   FormControl,
+  FormHelperText,
   InputLabel,
   MenuItem,
 } from "@mui/material";
@@ -60,7 +61,7 @@ export default function AddItemButton() {
       setConfirmOpen(false);
     },
     onError(err) {
-      setErrors(err.graphQLErrors[0].extensions);
+      setErrors(err.graphQLErrors[0].extensions.exception);
     },
   });
 
@@ -78,6 +79,7 @@ export default function AddItemButton() {
   }
 
   function handleClose() {
+    setErrors({});
     onClose();
     setConfirmOpen(false);
   }
@@ -105,6 +107,8 @@ export default function AddItemButton() {
                 variant="standard"
                 value={values.upc}
                 onChange={onChange}
+                error={errors.upc}
+                helperText={!errors.upc ? "" : errors.upc}
               />
               <TextField
                 name="name"
@@ -113,8 +117,14 @@ export default function AddItemButton() {
                 variant="standard"
                 value={values.name}
                 onChange={onChange}
+                error={errors.name}
+                helperText={!errors.name ? "" : errors.name}
               />
-              <FormControl variant="standard" fullWidth>
+              <FormControl
+                error={errors.department}
+                variant="standard"
+                fullWidth
+              >
                 <InputLabel id="department-select-label">Department</InputLabel>
                 <Select
                   labelId="department-select-label"
@@ -129,6 +139,9 @@ export default function AddItemButton() {
                     </MenuItem>
                   ))}
                 </Select>
+                {errors.department && (
+                  <FormHelperText>{errors.department}</FormHelperText>
+                )}
               </FormControl>
             </Stack>
           </Box>
