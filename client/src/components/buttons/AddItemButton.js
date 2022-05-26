@@ -107,7 +107,7 @@ export default function AddItemButton() {
                 variant="standard"
                 value={values.upc}
                 onChange={onChange}
-                error={errors.upc}
+                error={errors.upc ? true : false}
                 helperText={!errors.upc ? "" : errors.upc}
               />
               <TextField
@@ -117,11 +117,11 @@ export default function AddItemButton() {
                 variant="standard"
                 value={values.name}
                 onChange={onChange}
-                error={errors.name}
+                error={errors.name ? true : false}
                 helperText={!errors.name ? "" : errors.name}
               />
               <FormControl
-                error={errors.department}
+                error={errors.department ? true : false}
                 variant="standard"
                 fullWidth
               >

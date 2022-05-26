@@ -108,7 +108,7 @@ function AddUserButton() {
                 variant="standard"
                 value={values.username}
                 onChange={onChange}
-                error={errors.username}
+                error={errors.username ? true : false}
                 helperText={!errors.username ? "" : errors.username}
               />
               <TextField
@@ -118,7 +118,7 @@ function AddUserButton() {
                 variant="standard"
                 value={values.password}
                 onChange={onChange}
-                error={errors.password}
+                error={errors.password ? true : false}
                 helperText={!errors.password ? "" : errors.password}
               />
               <TextField
@@ -128,13 +128,13 @@ function AddUserButton() {
                 variant="standard"
                 value={values.confirmPassword}
                 onChange={onChange}
-                error={errors.confirmPassword}
+                error={errors.confirmPassword ? true : false}
                 helperText={
                   !errors.confirmPassword ? "" : errors.confirmPassword
                 }
               />
               <FormControl
-                error={errors.department}
+                error={errors.department ? true : false}
                 variant="standard"
                 fullWidth
               >
@@ -163,7 +163,7 @@ function AddUserButton() {
                 variant="standard"
                 value={values.email}
                 onChange={onChange}
-                error={errors.email}
+                error={errors.email ? true : false}
                 helperText={!errors.email ? "" : errors.email}
               />
             </Stack>
