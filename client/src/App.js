@@ -9,7 +9,6 @@ import { AuthProvider } from "./context/auth";
 import { AuthRoute, AuthenticatedRoute } from "./util/AuthRoute";
 
 import MenuBar from "./components/MenuBar";
-import AppMenuBar from "./components/AppMenuBar";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Users from "./pages/Users";
@@ -20,7 +19,7 @@ function App() {
     <AuthProvider>
       <Router>
         <Container>
-          <AppMenuBar />
+          <MenuBar />
           <Routes>
             <Route path="/" element={<Home />} />
             <Route

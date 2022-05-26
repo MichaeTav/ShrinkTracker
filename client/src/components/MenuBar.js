@@ -1,72 +1,68 @@
-import React, { useContext, useState } from "react";
-import { Menu } from "semantic-ui-react";
+import React, { useState, useContext } from "react";
+import { Tabs, Tab } from "@mui/material";
 import { Link } from "react-router-dom";
 
 import { AuthContext } from "../context/auth";
 
-function MenuBar() {
+export default function MenuBar() {
   const { userData, logout } = useContext(AuthContext);
-  const pathname = window.location.pathname;
+  const [selectedTab, setSelectedTab] = useState(0);
 
-  const path = pathname === "/" ? "home" : pathname.substring(1);
-  const [activeItem, setActiveItem] = useState(path);
+  const handleItemClick = (e, newValue) => {
+    //Logout
+    if (newValue === "logout") {
+      logout();
+      setSelectedTab(0);
+    } else {
+      setSelectedTab(newValue);
+    }
+    // console.log(window.location.pathname);
+  };
 
-  const handleItemClick = (e, { name }) => setActiveItem(name);
   const menuBar = userData ? (
-    <Menu pointing secondary size="massive" color="orange">
-      <Menu.Item
-        name={userData.username}
-        active={
-          activeItem === userData.username ||
-          activeItem === "home" ||
-          path === "home"
-        }
-        onClick={handleItemClick}
-        as={Link}
+    <Tabs
+      TabIndicatorProps={{
+        style: { background: "#F2711C", textColor: "#F2711C" },
+      }}
+      textColor="inherit"
+      value={selectedTab}
+      onChange={handleItemClick}
+    >
+      <Tab
+        disableRipple
+        label={userData.username}
+        LinkComponent={Link}
         to="/"
       />
-      <Menu.Item
-        name="items"
-        active={activeItem === "items"}
-        onClick={handleItemClick}
-        as={Link}
-        to="/items"
+      <Tab disableRipple label="Items" LinkComponent={Link} to="/items" />
+      {userData.roles.length > 1 && (
+        <Tab disableRipple label="Users" LinkComponent={Link} to="/users" />
+      )}
+      <Tab
+        disableRipple
+        label="Logout"
+        sx={{ marginLeft: "auto" }}
+        value="logout"
       />
-      <Menu.Item
-        name="users"
-        active={activeItem === "users"}
-        onClick={handleItemClick}
-        as={Link}
-        to="/users"
-      />
-
-      <Menu.Menu position="right">
-        <Menu.Item name="logout" onClick={logout} />
-      </Menu.Menu>
-    </Menu>
+    </Tabs>
   ) : (
-    <Menu pointing secondary size="massive" color="orange">
-      <Menu.Item
-        name="home"
-        active={activeItem === "home"}
-        onClick={handleItemClick}
-        as={Link}
-        to="/"
+    <Tabs
+      TabIndicatorProps={{
+        style: { background: "#F2711C", textColor: "#F2711C" },
+      }}
+      textColor="inherit"
+      value={selectedTab}
+      onChange={handleItemClick}
+    >
+      <Tab label="Home" LinkComponent={Link} to="/" />
+      <Tab
+        label="Login"
+        sx={{ marginLeft: "auto" }}
+        LinkComponent={Link}
+        to="/login"
       />
-
-      <Menu.Menu position="right">
-        <Menu.Item
-          name="login"
-          active={activeItem === "login"}
-          onClick={handleItemClick}
-          as={Link}
-          to="/login"
-        />
-      </Menu.Menu>
-    </Menu>
+    </Tabs>
   );
 
   return menuBar;
 }
-
-export default MenuBar;
