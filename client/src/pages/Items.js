@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
 
-import ItemTable from "../components/ItemTable";
+import ItemTable from "../components/tables/ItemTable";
 
 function Items() {
   return (

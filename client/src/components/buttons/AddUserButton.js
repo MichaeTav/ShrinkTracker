@@ -1,9 +1,24 @@
 import React, { useState } from "react";
 import gql from "graphql-tag";
-import { Button, Modal, Icon, Form } from "semantic-ui-react";
 import { useMutation } from "@apollo/react-hooks";
+import {
+  IconButton,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Button,
+  Tooltip,
+  Box,
+  TextField,
+  Stack,
+  Select,
+  FormControl,
+  InputLabel,
+  MenuItem,
+} from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
 
-import MyPopup from "../../util/MyPopup";
 import { useForm } from "../../util/hooks";
 import { FETCH_ALL_USERS_QUERY } from "../../util/graphql";
 
@@ -27,10 +42,7 @@ function AddUserButton() {
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [errors, setErrors] = useState({});
 
-  const { onChange, onSubmit, onClose, values } = useForm(
-    registerUser,
-    initialValues
-  );
+  const { onChange, onClose, values } = useForm(registerUser, initialValues);
 
   const [addUser, { loading }] = useMutation(ADD_USER_MUTATION, {
     variables: { inputUser: values },
@@ -57,85 +69,92 @@ function AddUserButton() {
     addUser();
   }
 
-  function closeForm() {
+  function onSelectionChange(event) {
+    onChange(event);
+  }
+
+  function handleClickOpen() {
+    setConfirmOpen(true);
+  }
+
+  function handleClose() {
     onClose();
     setConfirmOpen(false);
   }
+
   return (
     <>
-      <MyPopup content="Add User">
-        <Button
-          as="div"
-          color="green"
-          floated="right"
-          onClick={() => setConfirmOpen(true)}
-        >
-          <Icon name="plus" style={{ margin: 0 }} />
-        </Button>
-      </MyPopup>
-      <Modal open={confirmOpen} size="tiny" onClose={() => closeForm()}>
-        <div className="form-container">
-          <Form
-            onSubmit={onSubmit}
-            noValidate
-            className={loading ? "loading" : ""}
-          >
-            <h1>Register User</h1>
-            <Form.Input
-              label="Username"
-              placeholder="Username.."
-              name="username"
-              type="text"
-              value={values.username}
-              onChange={onChange}
-            />
-            <Form.Input
-              label="Password"
-              placeholder="Password.."
-              name="password"
-              type="password"
-              value={values.password}
-              onChange={onChange}
-            />
-            <Form.Input
-              label="Confirm Password"
-              placeholder="Confirm Password.."
-              name="confirmPassword"
-              type="password"
-              value={values.confirmPassword}
-              onChange={onChange}
-            />
-            <Form.Select
-              label="Department"
-              placeholder="Department"
-              name="department"
-              options={departmentSelections}
-              //value={values.department}
-              onChange={onChange}
-            />
-            <Form.Input
-              label="Email"
-              placeholder="Email.."
-              name="email"
-              type="email"
-              value={values.email}
-              onChange={onChange}
-            />
-            <Button type="submit" primary>
-              Register
-            </Button>
-          </Form>
-          {Object.keys(errors).length > 0 && (
-            <div className="ui error message">
-              <ul className="list">
-                {Object.values(errors).map((value) => (
-                  <li key={value}>{value}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      </Modal>
+      <Tooltip title="Add User" arrow>
+        <IconButton size="large" color="success" onClick={handleClickOpen}>
+          <AddIcon />
+        </IconButton>
+      </Tooltip>
+      <Dialog open={confirmOpen} onClose={handleClose}>
+        <DialogTitle>Add User</DialogTitle>
+        <DialogContent>
+          <Box>
+            <Stack
+              direction="column"
+              justifyContent="space-evenly"
+              alignItems="center"
+              spacing={2}
+            >
+              <TextField
+                name="username"
+                label="Name"
+                type="text"
+                variant="standard"
+                value={values.username}
+                onChange={onChange}
+              />
+              <TextField
+                name="password"
+                label="Password"
+                type="password"
+                variant="standard"
+                value={values.password}
+                onChange={onChange}
+              />
+              <TextField
+                name="confirmPassword"
+                label="Confirm Password"
+                type="password"
+                variant="standard"
+                value={values.confirmPassword}
+                onChange={onChange}
+              />
+              <FormControl variant="standard" fullWidth>
+                <InputLabel id="department-select-label">Department</InputLabel>
+                <Select
+                  labelId="department-select-label"
+                  name="department"
+                  value={values.department}
+                  onChange={onSelectionChange}
+                  label="Department"
+                >
+                  {departmentSelections.map((department) => (
+                    <MenuItem key={department.key} value={department.value}>
+                      {department.text}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <TextField
+                name="email"
+                label="Email"
+                type="text"
+                variant="standard"
+                value={values.email}
+                onChange={onChange}
+              />
+            </Stack>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={addUser}>Add</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
