@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import { useQuery } from "@apollo/react-hooks";
-import { /*Grid,*/ Transition } from "semantic-ui-react";
 import { Box, Grid, Typography, Stack, Paper } from "@mui/material";
 
 import { AuthContext } from "../context/auth";
@@ -30,7 +29,7 @@ export default function Home() {
           {loading ? (
             <h1>Loading Items..</h1>
           ) : (
-            <Transition.Group>
+            <>
               {shrinkItems &&
                 shrinkItems
                   .sort(
@@ -50,8 +49,8 @@ export default function Home() {
                       <ShrinkItemCard shrinkItem={shrinkItem} />
                     </Grid>
                   ))}
-            </Transition.Group>
-          )}
+            </>
+          )}{" "}
         </Grid>
       </Stack>
     </Box>

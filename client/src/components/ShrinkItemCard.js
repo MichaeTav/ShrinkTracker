@@ -42,7 +42,7 @@ export default function ShrinkItemCard({
         <Divider variant="middle" />
         <CardContent>
           <CardActions disableSpacing>
-            <Typography variant="body">
+            <Typography variant="body1">
               Expires {moment(expirationDate, "YYYYMMDD").fromNow()}
               <br />
               UPC: {upc}

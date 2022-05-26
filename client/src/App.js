@@ -1,8 +1,7 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { Container } from "semantic-ui-react";
+import { Container } from "@mui/material";
 
-import "semantic-ui-css/semantic.min.css";
 import "./App.css";
 
 import { AuthProvider } from "./context/auth";
