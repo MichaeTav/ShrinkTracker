@@ -29,8 +29,8 @@ export const FETCH_ALL_USERS_QUERY = gql`
 `;
 
 export const FETCH_ALL_ITEMS_QUERY = gql`
-  {
-    getAllItems {
+  query ($department: String!) {
+    getAllItems(department: $department) {
       id
       upc
       name

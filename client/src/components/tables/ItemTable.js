@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import { useQuery } from "@apollo/react-hooks";
 import {
   Table,
@@ -9,13 +10,18 @@ import {
   Paper,
 } from "@mui/material";
 
+import { AuthContext } from "../../context/auth";
 import AddItemButton from "../buttons/AddItemButton";
 import DeleteItemButton from "../buttons/DeleteItemButton";
 import { FETCH_ALL_ITEMS_QUERY } from "../../util/graphql";
 
 export default function ItemTable() {
+  const { userData } = useContext(AuthContext);
+  const department = userData.department;
+
   const { loading, data: { getAllItems: items } = {} } = useQuery(
-    FETCH_ALL_ITEMS_QUERY
+    FETCH_ALL_ITEMS_QUERY,
+    { variables: { department } }
   );
 
   return (

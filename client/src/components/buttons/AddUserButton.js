@@ -33,6 +33,7 @@ function AddUserButton() {
     roles: [],
   };
   const departmentSelections = [
+    { key: "a", text: "Admin", value: "Admin" },
     { key: "p", text: "Produce", value: "Produce" },
     { key: "m", text: "Meat", value: "Meat" },
     { key: "b", text: "Bakery", value: "Bakery" },

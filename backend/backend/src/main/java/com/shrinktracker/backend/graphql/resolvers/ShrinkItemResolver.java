@@ -46,7 +46,6 @@ public class ShrinkItemResolver implements GraphQLQueryResolver, GraphQLMutation
     /* Queries */
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public Iterable<ShrinkItem> getAllShrinkItems(String department){
-        log.info("Shrink items accessed");
         if(department.equals("Admin")){
             return shrinkItemRepository.findAll();
         }

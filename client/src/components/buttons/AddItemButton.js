@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useContext } from "react";
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
 import {
@@ -20,6 +20,7 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 
+import { AuthContext } from "../../context/auth";
 import { FETCH_ALL_ITEMS_QUERY } from "../../util/graphql.js";
 import { useForm } from "../../util/hooks";
 
@@ -37,22 +38,28 @@ export default function AddItemButton() {
     { key: "d", text: "Deli", value: "Deli" },
   ];
 
+  const { userData } = useContext(AuthContext);
+  const department = userData.department;
+  const isAdmin = department === "Admin";
+
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [errors, setErrors] = useState({});
 
   const { onChange, onClose, values } = useForm(addItemCallback, initialValues);
+
+  if (!isAdmin) values.department = department;
 
   const [addItem, { loading }] = useMutation(ADD_ITEM_MUTATION, {
     variables: values,
     update(proxy, result) {
       const data = proxy.readQuery({
         query: FETCH_ALL_ITEMS_QUERY,
-        variables: { values },
+        variables: { values, department },
       });
       data.getAllItems = [...data.getAllItems, result.data.addItem];
       proxy.writeQuery({
         query: FETCH_ALL_ITEMS_QUERY,
-        variables: { values },
+        variables: { values, department },
         data,
       });
       values.upc = "";
@@ -120,29 +127,33 @@ export default function AddItemButton() {
                 error={errors.name ? true : false}
                 helperText={!errors.name ? "" : errors.name}
               />
-              <FormControl
-                error={errors.department ? true : false}
-                variant="standard"
-                fullWidth
-              >
-                <InputLabel id="department-select-label">Department</InputLabel>
-                <Select
-                  labelId="department-select-label"
-                  name="department"
-                  value={values.department}
-                  onChange={onSelectionChange}
-                  label="Department"
+              {isAdmin && (
+                <FormControl
+                  error={errors.department ? true : false}
+                  variant="standard"
+                  fullWidth
                 >
-                  {departmentSelections.map((department) => (
-                    <MenuItem key={department.key} value={department.value}>
-                      {department.text}
-                    </MenuItem>
-                  ))}
-                </Select>
-                {errors.department && (
-                  <FormHelperText>{errors.department}</FormHelperText>
-                )}
-              </FormControl>
+                  <InputLabel id="department-select-label">
+                    Department
+                  </InputLabel>
+                  <Select
+                    labelId="department-select-label"
+                    name="department"
+                    value={values.department}
+                    onChange={onSelectionChange}
+                    label="Department"
+                  >
+                    {departmentSelections.map((department) => (
+                      <MenuItem key={department.key} value={department.value}>
+                        {department.text}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {errors.department && (
+                    <FormHelperText>{errors.department}</FormHelperText>
+                  )}
+                </FormControl>
+              )}
             </Stack>
           </Box>
         </DialogContent>

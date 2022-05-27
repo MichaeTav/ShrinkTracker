@@ -25,9 +25,12 @@ public class ItemResolver implements GraphQLQueryResolver, GraphQLMutationResolv
 
     /* Queries */
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public Iterable<Item> getAllItems(){
-        log.info("Items accessed");
-        return itemRepository.findAll();
+    public Iterable<Item> getAllItems(String department){
+        if(department.equals("Admin")){
+            return itemRepository.findAll();
+        }
+
+        return itemRepository.findAllItemsByDepartment(department);
     }
 
     /* Mutations */

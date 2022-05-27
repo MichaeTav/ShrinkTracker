@@ -6,7 +6,7 @@ type Item {
 }
 
 extend type Query {
-    getAllItems: [Item]!
+    getAllItems(department: String): [Item]!
 }
 
 extend type Mutation {
