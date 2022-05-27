@@ -10,10 +10,10 @@ type ShrinkItem {
 }
 
 extend type Query {
-    getAllShrinkItems: [ShrinkItem]!
+    getAllShrinkItems(department: String): [ShrinkItem]!
 }
 
 extend type Mutation {
-    deleteShrinkItem(id: ID!, quantity: Int!): Boolean
+    deleteShrinkItem(id: ID!, upc: String!, quantity: Int!): Boolean
     addShrinkItem(upc: String!, expirationDate: String!, quantity: Int!): ShrinkItem!
 }

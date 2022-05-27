@@ -52,7 +52,7 @@ export default function ShrinkItemCard({
               Quantity: {quantity}
             </Typography>
             <Box sx={{ marginLeft: "auto" }}>
-              <DeleteShrinkItemButton shrinkItemId={id} />
+              <DeleteShrinkItemButton shrinkItemId={id} upc={upc} />
             </Box>
           </CardActions>
         </CardContent>

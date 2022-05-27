@@ -12,7 +12,11 @@ import com.shrinktracker.backend.util.exceptions.AddShrinkItemException;
 import com.shrinktracker.backend.util.security.services.UserDetailsImpl;
 import graphql.GraphQLException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -34,23 +38,31 @@ public class ShrinkItemResolver implements GraphQLQueryResolver, GraphQLMutation
     private ShrinkItemRepository shrinkItemRepository;
 
     @Autowired
+    private MongoTemplate mongoTemplate;
+
+    @Autowired
     private ItemRepository itemRepository;
 
     /* Queries */
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public Iterable<ShrinkItem> getAllShrinkItems(){
+    public Iterable<ShrinkItem> getAllShrinkItems(String department){
         log.info("Shrink items accessed");
-        return shrinkItemRepository.findAll();
+        if(department.equals("Admin")){
+            return shrinkItemRepository.findAll();
+        }
+        return mongoTemplate.findAll(ShrinkItem.class, "shrink_" + department.toLowerCase());
     }
 
     /* Mutations */
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public boolean deleteShrinkItem(String id, int quantity){
+    public boolean deleteShrinkItem(String id, String upc, int quantity){
         if(shrinkItemRepository.findById(id) == null) {
             throw new GraphQLException("Item not found");
 
         }
-
+        Query query = new Query();
+        query.addCriteria(Criteria.where("_id").is(id));
+        mongoTemplate.remove(query, getDepartmentCollection(upc));
         shrinkItemRepository.deleteById(id);
         return true;
     }
@@ -80,10 +92,22 @@ public class ShrinkItemResolver implements GraphQLQueryResolver, GraphQLMutation
 
         String userWhoAdded = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         ShrinkItem shrinkItem = new ShrinkItem(itemRepository.findByupc(upc), LocalDate.parse(expirationDate), quantity, LocalDate.now(), userWhoAdded);
-
         shrinkItemRepository.save(shrinkItem);
+        mongoTemplate.save(shrinkItem, getDepartmentCollection(upc));
         log.info("Shrink Item {} was added by: {}", shrinkItem.getItem().getName(), userWhoAdded);
 
         return shrinkItem;
+    }
+
+    private String getDepartmentCollection(String upc){
+        String departmentCollection = "shrink_";
+        switch(itemRepository.findByupc(upc).getDepartment()){
+            case("Produce"): departmentCollection += "produce"; break;
+            case("Meat"): departmentCollection += "meat"; break;
+            case("Deli"): departmentCollection += "deli"; break;
+            case("Bakery"): departmentCollection += "bakery"; break;
+            case("Grocery"): departmentCollection += "grocery"; break;
+        }
+        return departmentCollection;
     }
 }

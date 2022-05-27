@@ -89,6 +89,7 @@ const LOGIN_USER = gql`
         email
         username
         password
+        department
         roles {
           name
         }

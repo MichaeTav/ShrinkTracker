@@ -9,8 +9,11 @@ import { FETCH_SHRINK_ITEMS_QUERY } from "../util/graphql";
 
 export default function Home() {
   const { userData } = useContext(AuthContext);
+  const department = userData.department;
+
   const { loading, data: { getAllShrinkItems: shrinkItems } = {} } = useQuery(
-    FETCH_SHRINK_ITEMS_QUERY
+    FETCH_SHRINK_ITEMS_QUERY,
+    { variables: { department } }
   );
 
   return (

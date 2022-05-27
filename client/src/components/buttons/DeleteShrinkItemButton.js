@@ -15,12 +15,13 @@ import { useMutation } from "@apollo/react-hooks";
 
 import { FETCH_SHRINK_ITEMS_QUERY } from "../../util/graphql";
 
-export default function DeleteShrinkItemButton({ shrinkItemId, callback }) {
+export default function DeleteShrinkItemButton({ shrinkItemId, upc }) {
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   const [deleteItemMutation] = useMutation(DELETE_ITEM_MUTATION, {
     variables: {
       shrinkItemId,
+      upc,
       quantity: 20,
     },
     update(proxy) {
@@ -75,7 +76,7 @@ export default function DeleteShrinkItemButton({ shrinkItemId, callback }) {
 }
 
 const DELETE_ITEM_MUTATION = gql`
-  mutation ($shrinkItemId: ID!, $quantity: Int!) {
-    deleteShrinkItem(id: $shrinkItemId, quantity: $quantity)
+  mutation ($shrinkItemId: ID!, $upc: String!, $quantity: Int!) {
+    deleteShrinkItem(id: $shrinkItemId, upc: $upc, quantity: $quantity)
   }
 `;

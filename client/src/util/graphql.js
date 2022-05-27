@@ -1,8 +1,8 @@
 import gql from "graphql-tag";
 
 export const FETCH_SHRINK_ITEMS_QUERY = gql`
-  {
-    getAllShrinkItems {
+  query ($department: String!) {
+    getAllShrinkItems(department: $department) {
       id
       userWhoAdded
       expirationDate

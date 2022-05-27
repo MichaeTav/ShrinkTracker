@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
 import { Box, TextField, Button, Stack, Typography } from "@mui/material";
@@ -7,11 +7,13 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { isMobile } from "react-device-detect";
 
+import { AuthContext } from "../../context/auth";
 import { useShrinkForm } from "../../util/hooks";
 import { FETCH_SHRINK_ITEMS_QUERY } from "../../util/graphql";
 import ItemSearchBar from "../ItemSearchBar";
 
 export default function AddShrinkItemForm() {
+  const { userData } = useContext(AuthContext);
   const initialState = {
     upc: "",
     item: "",
@@ -29,9 +31,10 @@ export default function AddShrinkItemForm() {
     awaitRefetchQueries: true,
     variables: values,
     update(proxy, result) {
+      const department = userData.department;
       const data = proxy.readQuery({
         query: FETCH_SHRINK_ITEMS_QUERY,
-        variables: { values },
+        variables: { values, department },
       });
       data.getAllShrinkItems = [
         result.data.addShrinkItem,
@@ -39,7 +42,7 @@ export default function AddShrinkItemForm() {
       ];
       proxy.writeQuery({
         query: FETCH_SHRINK_ITEMS_QUERY,
-        variables: { values },
+        variables: { values, department },
         data,
       });
       //resets form to initial values
