@@ -1,19 +1,14 @@
-import React, { useContext } from "react";
+import React from "react";
 import { useQuery } from "@apollo/react-hooks";
 import { Box, Grid, Typography, Stack, Paper } from "@mui/material";
 
-import { AuthContext } from "../context/auth";
 import AddShrinkItemForm from "../components/forms/AddShrinkItemForm";
 import ShrinkItemCard from "../components/ShrinkItemCard";
 import { FETCH_SHRINK_ITEMS_QUERY } from "../util/graphql";
 
 export default function Home() {
-  const { userData } = useContext(AuthContext);
-  const department = userData.department;
-
   const { loading, data: { getAllShrinkItems: shrinkItems } = {} } = useQuery(
-    FETCH_SHRINK_ITEMS_QUERY,
-    { variables: { department } }
+    FETCH_SHRINK_ITEMS_QUERY
   );
 
   return (

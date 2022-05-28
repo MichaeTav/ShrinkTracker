@@ -13,11 +13,9 @@ import DeleteOutlined from "@mui/icons-material/Delete";
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/react-hooks";
 
-import { AuthContext } from "../../context/auth";
 import { FETCH_SHRINK_ITEMS_QUERY } from "../../util/graphql";
 
 export default function DeleteShrinkItemButton({ shrinkItemId, upc }) {
-  const { userData } = useContext(AuthContext);
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   const [deleteItemMutation] = useMutation(DELETE_ITEM_MUTATION, {
@@ -27,18 +25,17 @@ export default function DeleteShrinkItemButton({ shrinkItemId, upc }) {
       quantity: 20,
     },
     update(proxy) {
-      const department = userData.department;
       setConfirmOpen(false);
       const data = proxy.readQuery({
         query: FETCH_SHRINK_ITEMS_QUERY,
-        variables: { shrinkItemId, department },
+        variables: { shrinkItemId },
       });
       data.getAllShrinkItems = data.getAllShrinkItems.filter(
         (i) => i.id !== shrinkItemId
       );
       proxy.writeQuery({
         query: FETCH_SHRINK_ITEMS_QUERY,
-        variables: { shrinkItemId, department },
+        variables: { shrinkItemId },
         data,
       });
     },

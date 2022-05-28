@@ -7,9 +7,11 @@ import com.coxautodev.graphql.tools.GraphQLMutationResolver;
 import com.coxautodev.graphql.tools.GraphQLQueryResolver;
 import com.shrinktracker.backend.util.exceptions.CreateItemException;
 import com.shrinktracker.backend.util.exceptions.CreateUserException;
+import com.shrinktracker.backend.util.security.services.UserDetailsImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -25,11 +27,11 @@ public class ItemResolver implements GraphQLQueryResolver, GraphQLMutationResolv
 
     /* Queries */
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public Iterable<Item> getAllItems(String department){
+    public Iterable<Item> getAllItems(){
+        String department = ((UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getDepartment();
         if(department.equals("Admin")){
             return itemRepository.findAll();
         }
-
         return itemRepository.findAllItemsByDepartment(department);
     }
 

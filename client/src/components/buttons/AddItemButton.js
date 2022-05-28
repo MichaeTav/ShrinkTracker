@@ -37,29 +37,26 @@ export default function AddItemButton() {
     { key: "g", text: "Grocery", value: "Grocery" },
     { key: "d", text: "Deli", value: "Deli" },
   ];
-
+  //use user context to determine items department
   const { userData } = useContext(AuthContext);
-  const department = userData.department;
-  const isAdmin = department === "Admin";
+  const isAdmin = userData.department === "Admin";
 
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [errors, setErrors] = useState({});
 
   const { onChange, onClose, values } = useForm(addItemCallback, initialValues);
 
-  if (!isAdmin) values.department = department;
-
   const [addItem, { loading }] = useMutation(ADD_ITEM_MUTATION, {
     variables: values,
     update(proxy, result) {
       const data = proxy.readQuery({
         query: FETCH_ALL_ITEMS_QUERY,
-        variables: { values, department },
+        variables: { values },
       });
       data.getAllItems = [...data.getAllItems, result.data.addItem];
       proxy.writeQuery({
         query: FETCH_ALL_ITEMS_QUERY,
-        variables: { values, department },
+        variables: { values },
         data,
       });
       values.upc = "";

@@ -10,7 +10,7 @@ type ShrinkItem {
 }
 
 extend type Query {
-    getAllShrinkItems: [ShrinkItem]!
+    getAllShrinkItems(department: String): [ShrinkItem]!
 }
 
 extend type Mutation {

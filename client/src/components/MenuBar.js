@@ -1,19 +1,21 @@
 import React, { useState, useContext } from "react";
 import { Tabs, Tab, AppBar } from "@mui/material";
 import { Link } from "react-router-dom";
-import { isMobile } from "react-device-detect";
+import { useApolloClient } from "@apollo/client";
 
 import { AuthContext } from "../context/auth";
 
 export default function MenuBar() {
   const { userData, logout } = useContext(AuthContext);
   const [selectedTab, setSelectedTab] = useState(0);
+  const client = useApolloClient();
 
   const handleItemClick = (e, newValue) => {
     //Logout
     if (newValue === "logout") {
-      logout();
+      client.clearStore();
       setSelectedTab(0);
+      logout();
     } else {
       setSelectedTab(newValue);
     }

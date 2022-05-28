@@ -54,6 +54,8 @@ function AuthProvider(props) {
       type: "LOGIN",
       payload: userDataInput,
     });
+
+    //window.location.reload(true);
   }
 
   function logout() {

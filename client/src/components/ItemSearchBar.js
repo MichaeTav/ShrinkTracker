@@ -2,7 +2,6 @@ import { useContext } from "react";
 import { Autocomplete, TextField } from "@mui/material";
 import { useQuery } from "@apollo/react-hooks";
 
-import { AuthContext } from "../context/auth";
 import { FETCH_ALL_ITEMS_QUERY } from "../util/graphql";
 
 export default function ItemSearchBar({
@@ -11,11 +10,8 @@ export default function ItemSearchBar({
   error,
   helperText,
 }) {
-  const { userData } = useContext(AuthContext);
-  const department = userData.department;
   const { loading, data: { getAllItems: items } = {} } = useQuery(
-    FETCH_ALL_ITEMS_QUERY,
-    { variables: { department } }
+    FETCH_ALL_ITEMS_QUERY
   );
   return (
     <Autocomplete

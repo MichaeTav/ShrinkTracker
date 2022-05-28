@@ -13,7 +13,7 @@ public class InvalidCredentialsException extends RuntimeException implements Gra
 
 
     public InvalidCredentialsException(String message, String invalid){
-        super(message);
+        super(message, null, false, false);
         this.invalidCredentials = message;
     }
 

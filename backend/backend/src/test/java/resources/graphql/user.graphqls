@@ -1,0 +1,32 @@
+type User{
+    id: ID!
+    username: String!
+    password: String!
+    department: String!
+    email: String!
+    roles: [Role]!
+}
+
+type UserPayload{
+    user: User!
+    token: String!
+}
+
+input InputUser {
+    username: String!
+    password: String!
+    confirmPassword: String!
+    department: String!
+    email: String!
+    roles: [String]!
+}
+
+type Query {
+    findAllUsers: [User]
+}
+
+type Mutation {
+    createUser(inputUser: InputUser!): User
+    login(username: String!, password: String!): UserPayload!
+    deleteUser(id: String!): Boolean
+}
